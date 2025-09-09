@@ -1,0 +1,158 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Poder da Inteligência Artificial</title>
+    <style>
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #000;
+            color: #fff;
+        }
+        header {
+            background-color: #fff;
+            color: #000;
+            text-align: center;
+            padding: 2rem;
+            border-bottom: 4px solid #000;
+        }
+        nav {
+            background-color: #000;
+            padding: 1rem;
+            border-bottom: 2px solid #fff;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 1.5rem;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: #ccc;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .section {
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 0.5rem;
+        }
+        .section ul {
+            list-style: square;
+            padding-left: 1.5rem;
+        }
+        .section ul li {
+            margin-bottom: 0.5rem;
+        }
+        footer {
+            background-color: #fff;
+            color: #000;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>O Poder da Inteligência Artificial</h1>
+        <p>Desvendando o Futuro com Tecnologia</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#introducao">Introdução</a></li>
+            <li><a href="#impactos">Impactos</a></li>
+            <li><a href="#futuro">Futuro</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div class="section" id="introducao">
+            <h2>Introdução à IA</h2>
+            <p>A Inteligência Artificial (IA) é a força motriz por trás da transformação digital global. Com a capacidade de processar dados em escala, aprender com padrões e tomar decisões autônomas, a IA está redefinindo indústrias, economias e a sociedade como um todo.</p>
+        </div>
+        <div class="section" id="impactos">
+            <h2>Impactos da IA</h2>
+            <ul>
+                <li><strong>Eficiência Operacional:</strong> Automatização de processos complexos, reduzindo custos e tempo.</li>
+                <li><strong>Inovação:</strong> Criação de novos produtos e serviços baseados em dados e aprendizado de máquina.</li>
+                <li><strong>Tomada de Decisão:</strong> Insights precisos para decisões estratégicas em tempo real.</li>
+                <li><strong>Acessibilidade:</strong> Democratização de tecnologias avançadas para empresas de todos os tamanhos.</li>
+            </ul>
+        </div>
+        <div class="section" id="futuro">
+            <h2>O Futuro com IA</h2>
+            <p>O futuro da IA promete avanços ainda mais impressionantes, desde assistentes virtuais ultra-inteligentes até sistemas que podem resolver problemas globais, como mudanças climáticas e saúde. A IA está moldando um mundo onde a tecnologia e a humanidade colaboram para um progresso sem precedentes.</p>
+        </div>
+        <div class="section" id="contato">
+            <h2>Entre em Contato</h2>
+            <p>Interessado em explorar o poder da IA? Fale conosco para saber mais!</p>
+            <p>Email: info@iapoder.com | Telefone: +351 847877405</p>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 O Poder da Inteligência Artificial. Todos os direitos reservados.</p>
+        <p>Powered by MUV</p>
+    </footer>
+</body>
+</html>
